@@ -1,0 +1,19 @@
+Playing as: <%= current_user(@conn) %>
+
+<form method="post" action="/move" class="inline">
+  <button type="submit" name="movement" value=8>
+    UP
+  </button>
+  <button type="submit" name="movement" value=2>
+    DOWN
+  </button>
+  <button type="submit" name="movement" value=4>
+    LEFT
+  </button>
+  <button type="submit" name="movement" value=6>
+    RIGHT
+  </button>
+  <button type="submit" name="movement" value=5>
+    ATTACK
+  </button>
+</form>
