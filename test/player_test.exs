@@ -23,5 +23,17 @@ defmodule PlayerTest do
     assert {0,0} == FormavivaMmo.Player.Player.get_position(pid)
   end
 
+  test "player kills enemy" do
+    player_name = 'test_player_2'
+    enemy_name = 'test_player_1'
+    player_pid = FormavivaMmo.World.PlayerManager.get_player_pid(player_name)
+    enemy_pid = FormavivaMmo.World.PlayerManager.get_player_pid(enemy_name)
+
+    FormavivaMmo.Player.Player.attack(player_pid)
+    :timer.sleep(5)
+    
+    assert FormavivaMmo.Player.Player.is_alive(enemy_pid) == false
+  end
+
 
 end

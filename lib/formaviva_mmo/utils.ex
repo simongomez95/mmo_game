@@ -9,4 +9,8 @@ defmodule FormavivaMmo.Utils do
     |> Kernel.+(min)
     |> Integer.to_string(36)
   end
+
+  def get_element(matrix, {y,x}) do
+    Enum.at(Enum.at(matrix, y), x)
+  end
 end
