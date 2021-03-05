@@ -12,11 +12,15 @@ defmodule FormavivaMmo.Player.Player do
   end
 
   def init(:ok) do
-    {:ok, %{position: {0,0}, alive: true, }}
+    {:ok, %{position: FormavivaMmo.World.GameMap.random_walkable_tile(), alive: true, last_death: 0}}
   end
 
   def is_alive(pid) do
     GenServer.call(pid, :is_alive)
+  end
+
+  def is_alive_by_name(username) do
+    FormavivaMmo.World.PlayerManager.get_player_pid(username) |> is_alive
   end
 
   def get_position(pid) do
@@ -34,11 +38,13 @@ defmodule FormavivaMmo.Player.Player do
   end
 
   def attacked(pid) do
-    GenServer.cast(pid, :attacked)
+    GenServer.cast(pid, :die)
+    Task.start(fn -> revive(pid) end)
   end
 
-  def be_hit(pid) do
-    GenServer.cast(pid, :be_hit)
+  def revive(pid) do
+    :timer.sleep(5000)
+    GenServer.cast(pid, :revive)
   end
 
   def set_position(pid, {y,x}) do
@@ -62,20 +68,20 @@ defmodule FormavivaMmo.Player.Player do
     end
   end
 
-  def handle_cast({:set_position, {y,x}}, state) do
-    if FormavivaMmo.World.GameMap.is_walkable({y,x}) do
-        {:noreply, Map.put(state, :position, {y,x})}
-    else
-        {:noreply, state}
-    end
-  end
-
   def handle_call(:get_position, _from, state) do
     {:reply, Map.get(state, :position), state}
   end
 
   def handle_call(:is_alive, _from, state) do
     {:reply, Map.get(state, :alive), state}
+  end
+
+  def handle_cast({:set_position, {y,x}}, state) do
+    if FormavivaMmo.World.GameMap.is_walkable({y,x}) do
+        {:noreply, Map.put(state, :position, {y,x})}
+    else
+        {:noreply, state}
+    end
   end
 
   def handle_cast(:attack, state) do
@@ -85,11 +91,15 @@ defmodule FormavivaMmo.Player.Player do
     {:noreply, state}
   end
 
-  def handle_cast(:attacked, state) do
+  def handle_cast(:die, state) do
     if Map.get(state, :alive) do
       {:noreply, Map.put(state, :alive, false)}
     else
       {:noreply, state}
     end
+  end
+
+  def handle_cast(:revive, state) do
+    {:noreply, Map.put(state, :alive, true) |> Map.put(:position, FormavivaMmo.World.GameMap.random_walkable_tile())}
   end
 end

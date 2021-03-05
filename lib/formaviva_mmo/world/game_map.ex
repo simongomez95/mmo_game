@@ -1,15 +1,27 @@
 defmodule FormavivaMmo.World.GameMap do
 
   @layout [
-    [0,1,0],
-    [0,0,0],
-    [0,0,0]
+    [1,1,1,1,1,1],
+    [1,0,0,0,0,1],
+    [1,0,0,0,0,1],
+    [1,0,0,0,0,1],
+    [1,0,0,0,0,1],
+    [1,1,1,1,1,1],
   ]
 
   def is_walkable({y,x}) do
     case FormavivaMmo.Utils.get_element(@layout, {y,x}) do
       1 -> false
       0 -> true
+    end
+  end
+
+  def random_walkable_tile() do
+    random_position = {:rand.uniform(length(@layout))-1, :rand.uniform(length(@layout))-1}
+    if is_walkable(random_position) do
+      random_position
+    else
+      random_walkable_tile()
     end
   end
 

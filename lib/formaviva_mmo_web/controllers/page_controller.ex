@@ -6,8 +6,10 @@ defmodule FormavivaMmoWeb.PageController do
   end
 
   def game(conn, %{"name" => username}) do
-    FormavivaMmo.World.PlayerManager.get_player_pid(username)
-    put_session(conn, :username, username) |> render("game.html")
+    pid = FormavivaMmo.World.PlayerManager.get_player_pid(username)
+    put_session(conn, :username, username)
+    |> put_session(:pid, pid)
+    |> render("game.html")
   end
 
   def game(conn, %{}) do
@@ -16,7 +18,10 @@ defmodule FormavivaMmoWeb.PageController do
       FormavivaMmo.World.PlayerManager.get_player_pid(username)
       render(conn, "game.html")
     else
-      put_session(conn, :username, FormavivaMmo.Utils.generate_username())
+
+      FormavivaMmo.Utils.generate_username()
+      pid = FormavivaMmo.World.PlayerManager.get_player_pid(username)
+      put_session(conn, :username, username)
       |> render("game.html")
     end
   end

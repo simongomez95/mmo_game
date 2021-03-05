@@ -1,30 +1,37 @@
 Playing as: <%= current_user(@conn) %>
-<table style="border: 1px solid black;">
-<%= for i <- 0..length(map_layout)-1 do %>
-  <tr style="border: 1px solid black;">
-    <%= for j <- 0..length(map_layout)-1 do %>
-    <td style="border: 1px solid black;">
-      <%= players({i,j}) %>
-    <% end %>
+<table style="border: 1px solid black;table-layout: fixed; width: 100%;">
+<%= for i <- 0..length(map_layout())-1 do %>
+  <tr >
+    <%= for j <- 0..length(map_layout())-1 do %>
+    <%= if is_wall({i,j}) do%>
+    <td class=wall>
+    <%= else %>
+    <td>
+    <%= end %>
+      <%= for player <- players({i,j}) do %>
+        <p style="color: <%= player_color(@conn, player) %> "><%=player%></p><br>
+      <%= end %>
+    <%= end %>
     </td>
   </tr>
 <% end %>
 </table>
 
 <form method="post" action="/move" class="inline">
-  <button type="submit" name="movement" value='UP'>
-    UP
+  <button type="submit" name="movement" value='LEFT'>
+    LEFT
   </button>
   <button type="submit" name="movement" value='DOWN'>
     DOWN
   </button>
-  <button type="submit" name="movement" value='LEFT'>
-    LEFT
+  <button type="submit" name="movement" value='UP'>
+    UP
   </button>
   <button type="submit" name="movement" value='RIGHT'>
     RIGHT
   </button>
-  <button type="submit" name="movement" value='ATTACK'>
+
+  <button type="submit" name="movement" value='ATTACK' style="background: red">
     ATTACK
   </button>
 </form>

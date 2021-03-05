@@ -1,26 +1,24 @@
 defmodule PlayerTest do
   use ExUnit.Case
 
-  test "initial position is 0,0" do
+  test "moves down from 1,1 to 2,1" do
     {:ok, pid} = FormavivaMmo.Player.Player.start_link(name: {:via, Registry, {FormavivaMmo.GameRegistry, "player_1"}})
 
-    assert {0,0} == FormavivaMmo.Player.Player.get_position(pid)
+    FormavivaMmo.Player.Player.set_position(pid, {1,1})
+
+    FormavivaMmo.Player.Player.move(pid, "DOWN")
+
+    assert {2,1} == FormavivaMmo.Player.Player.get_position(pid)
   end
 
-  test "moves down to 1,0" do
+  test "does not move if tile is not walkable" do
     {:ok, pid} = FormavivaMmo.Player.Player.start_link(name: {:via, Registry, {FormavivaMmo.GameRegistry, "player_1"}})
 
-    FormavivaMmo.Player.Player.move(pid, 'DOWN')
+    FormavivaMmo.Player.Player.set_position(pid, {1,1})
 
-    assert {1,0} == FormavivaMmo.Player.Player.get_position(pid)
-  end
+    FormavivaMmo.Player.Player.move(pid, "UP")
 
-  test "does not move is tile is not walkable" do
-    {:ok, pid} = FormavivaMmo.Player.Player.start_link(name: {:via, Registry, {FormavivaMmo.GameRegistry, "player_1"}})
-
-    FormavivaMmo.Player.Player.move(pid, 'RIGHT')
-
-    assert {0,0} == FormavivaMmo.Player.Player.get_position(pid)
+    assert {1,1} == FormavivaMmo.Player.Player.get_position(pid)
   end
 
   test "player kills enemy" do
@@ -29,9 +27,14 @@ defmodule PlayerTest do
     player_pid = FormavivaMmo.World.PlayerManager.get_player_pid(player_name)
     enemy_pid = FormavivaMmo.World.PlayerManager.get_player_pid(enemy_name)
 
+    FormavivaMmo.Player.Player.set_position(player_pid, {1,1})
+    FormavivaMmo.Player.Player.set_position(enemy_pid, {1,1})
+
+    :timer.sleep(50)
+
     FormavivaMmo.Player.Player.attack(player_pid)
-    :timer.sleep(5)
-    
+    :timer.sleep(50)
+
     assert FormavivaMmo.Player.Player.is_alive(enemy_pid) == false
   end
 
