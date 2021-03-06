@@ -1,4 +1,8 @@
 defmodule PlayerManagerTest do
+  @moduledoc """
+  Unit tests for PlayerManager module
+  """
+
   use ExUnit.Case
 
   test "returns correct player pid" do
@@ -18,6 +22,5 @@ defmodule PlayerManagerTest do
     final_len = length(DynamicSupervisor.which_children(FormavivaMmo.GameSupervisor))
     assert initial_len + 1 == final_len
   end
-
 
 end

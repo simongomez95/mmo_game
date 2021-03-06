@@ -1,17 +1,18 @@
 Playing as: <%= current_user(@conn) %>
+ <meta http-equiv="refresh" content="1">
 <table style="border: 1px solid black;table-layout: fixed; width: 100%;">
 <%= for i <- 0..length(map_layout())-1 do %>
   <tr >
     <%= for j <- 0..length(map_layout())-1 do %>
     <%= if is_wall({i,j}) do%>
     <td class=wall>
-    <%= else %>
+    <% else %>
     <td>
-    <%= end %>
+    <% end %>
       <%= for player <- players({i,j}) do %>
-        <p style="color: <%= player_color(@conn, player) %> "><%=player%></p><br>
-      <%= end %>
-    <%= end %>
+        <p style="background: <%= player_color(@conn, player) %> "><%=player%></p><br>
+      <% end %>
+    <% end %>
     </td>
   </tr>
 <% end %>

@@ -1,4 +1,8 @@
 defmodule FormavivaMmo.Player.Player do
+  @moduledoc """
+  Module in charge of player functions
+  """
+
   use GenServer
 
   @up "UP"
@@ -15,11 +19,11 @@ defmodule FormavivaMmo.Player.Player do
     {:ok, %{position: FormavivaMmo.World.GameMap.random_walkable_tile(), alive: true, last_death: 0}}
   end
 
-  def is_alive(pid) do
+  def is_alive(pid) when is_pid(pid) do
     GenServer.call(pid, :is_alive)
   end
 
-  def is_alive_by_name(username) do
+  def is_alive(username) when is_binary(username) do
     FormavivaMmo.World.PlayerManager.get_player_pid(username) |> is_alive
   end
 
@@ -27,8 +31,8 @@ defmodule FormavivaMmo.Player.Player do
     GenServer.call(pid, :get_position)
   end
 
-  def max_distance({y1,x1}, {y2,x2}) do
-    max(abs(y1-y2), abs(x1-x2))
+  def max_distance({y1, x1}, {y2, x2}) do
+    max(abs(y1 - y2), abs(x1 - x2))
   end
 
   def is_enemy_attackable(state, enemy_pid) do
@@ -47,8 +51,8 @@ defmodule FormavivaMmo.Player.Player do
     GenServer.cast(pid, :revive)
   end
 
-  def set_position(pid, {y,x}) do
-    GenServer.cast(pid, {:set_position, {y,x}})
+  def set_position(pid, {y, x}) do
+    GenServer.cast(pid, {:set_position, {y, x}})
   end
 
   def attack(pid) do
@@ -56,13 +60,13 @@ defmodule FormavivaMmo.Player.Player do
   end
 
   def move(pid, movement) do
-    {y,x} = get_position(pid)
+    {y, x} = get_position(pid)
     if is_alive(pid) do
       case movement do
-          @down -> set_position(pid, {y+1, x})
-          @up -> set_position(pid, {y-1, x})
-          @left -> set_position(pid, {y, x-1})
-          @right -> set_position(pid, {y, x+1})
+          @down -> set_position(pid, {y + 1, x})
+          @up -> set_position(pid, {y - 1, x})
+          @left -> set_position(pid, {y, x - 1})
+          @right -> set_position(pid, {y, x + 1})
           @attack -> attack(pid)
       end
     end
@@ -76,9 +80,9 @@ defmodule FormavivaMmo.Player.Player do
     {:reply, Map.get(state, :alive), state}
   end
 
-  def handle_cast({:set_position, {y,x}}, state) do
-    if FormavivaMmo.World.GameMap.is_walkable({y,x}) do
-        {:noreply, Map.put(state, :position, {y,x})}
+  def handle_cast({:set_position, {y, x}}, state) do
+    if FormavivaMmo.World.GameMap.is_walkable({y, x}) do
+        {:noreply, Map.put(state, :position, {y, x})}
     else
         {:noreply, state}
     end

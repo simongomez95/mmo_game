@@ -1,4 +1,7 @@
 defmodule FormavivaMmo.World.PlayerManager do
+  @moduledoc """
+  Module in charge of player process administration
+  """
 
   def get_player_pid(username) do
     Registry.lookup(FormavivaMmo.GameRegistry, username)

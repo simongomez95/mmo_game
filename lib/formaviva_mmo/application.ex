@@ -9,8 +9,6 @@ defmodule FormavivaMmo.Application do
     children = [
       # Start the Ecto repository
       FormavivaMmo.Repo,
-      # Start the Telemetry supervisor
-      FormavivaMmoWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: FormavivaMmo.PubSub},
       # Start the Endpoint (http/https)

@@ -15,8 +15,9 @@ defmodule FormavivaMmoWeb.Router do
   scope "/", FormavivaMmoWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get "/", PageController, :game
     get "/game", PageController, :game
     post "/move", PageController, :move
+    get "/move", PageController, :game
   end
 end
