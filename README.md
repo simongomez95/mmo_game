@@ -26,3 +26,13 @@ To build a production release:
  * Set your DATABASE_URL environment variable (E.g. `ecto://USER:PASS@HOST/DATABASE`)
  * Set the SECRET_KEY_BASE environment variable with your secret key base
  * run `mix release`
+
+## How to Play
+
+To play  using your preferred nickname, go to http://game_url/game?name={your_nickname}
+Or just go to http://game_url/game to play with a random username.
+
+You can play using the buttons on screen.
+
+Your character will appear in Green when alive or Red when dead.
+Other players will appear in Yellow when alive or Grey when dead.
